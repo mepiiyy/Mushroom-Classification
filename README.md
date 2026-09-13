@@ -11,74 +11,83 @@
 
 ---
 
-## Ringkasan Proyek
+## Tentang Proyek Ini
 
-Tugas ini membangun model klasifikasi untuk membedakan jamur **edible** (aman dimakan) dan **poisonous** (beracun) menggunakan dataset mushrooms.csv. Dataset terdiri dari 8124 jamur dengan 23 fitur kategorikal, dan distribusi kelasnya cukup seimbang (51.8% edible, 48.2% poisonous).
+Jamur liar itu beragam sekali bentuk, warna, dan baunya — tapi tidak semuanya aman untuk dimakan. Tugas ini membangun model machine learning yang bisa membedakan jamur **edible** (aman) dari yang **poisonous** (beracun) berdasarkan ciri-ciri fisiknya.
 
-Pipeline yang dilakukan: pemahaman data → EDA → preprocessing (penghapusan kolom `stalk-root` dan `veil-type`, One-Hot Encoding) → pelatihan empat model (Logistic Regression, Decision Tree, Random Forest, Neural Network) → evaluasi dan perbandingan → tuning hyperparameter → interpretasi model.
+Datanya terdiri dari 8124 sampel jamur, masing-masing punya 23 fitur kategorikal — dari aroma, bentuk tudung, warna insang, sampai habitat. Distribusinya cukup merata: 51.8% edible, 48.2% poisonous. Tidak perlu teknik khusus untuk menangani ketidakseimbangan kelas.
+
+Alur kerjanya sendiri berjalan dari pemahaman data, eksplorasi visual (EDA), preprocessing, pelatihan model, evaluasi, sampai interpretasi hasil. Empat model diuji: Logistic Regression, Decision Tree, Random Forest, dan Neural Network. Selain itu, ada empat bonus challenge — PCA, SHAP, model lanjutan (XGBoost, SVM, KNN), dan pipeline prediksi end-to-end.
 
 ---
 
-## Struktur Dataset
+## Sekilas Soal Dataset
 
-- **8124 baris** × **23 kolom**
+- **8124 baris** × **23 kolom** — seluruhnya kategorikal
 - **Target:** `class` (`e` = Edible, `p` = Poisonous)
-- **Fitur:** 22 fitur kategorikal (dari 23, `stalk-root` dihapus karena 30.5% missing value, `veil-type` dihapus karena konstan)
-- **Missing value:** Tidak ada NaN, tapi ada 2480 nilai `?` di `stalk-root`
+- **Fitur yang dibuang:**
+  - `stalk-root` — 30.5% isinya `?` (missing value tersamar), terlalu besar untuk diimputasi
+  - `veil-type` — nilainya cuma `p` di semua baris, tidak ada variasi
+- **Sisa fitur:** 22 kolom kategorikal yang informatif
 
 ---
 
-## Model yang Diuji
+## Hasil Modeling
 
-| Model | Accuracy | Keterangan |
-|-------|----------|------------|
-| Logistic Regression | ~0.99 | Baseline — sederhana tapi interpretable |
-| Decision Tree | ~1.00 | Fleksibel, berisiko overfitting |
-| Random Forest | ~1.00 | **Terbaik** — ensemble, stabil, interpretable |
-| Neural Network | ~0.99 | Kompetitif, butuh lebih banyak tuning |
+| Model | Accuracy | Catatan |
+|-------|----------|---------|
+| Logistic Regression | ~0.99 | Baseline — simpel, mudah diinterpretasi |
+| Decision Tree | ~1.00 | Fleksibel, tapi rawan overfitting |
+| Random Forest | ~1.00 | **Pilihan utama** — akurat, stabil, bisa dijelaskan |
+| Neural Network | ~0.99 | Kompetitif, tapi butuh lebih banyak tuning |
 
-**Random Forest** jadi pilihan utama: menggabungkan akurasi tinggi dengan stabilitas ensemble.
+**Random Forest** jadi model utama karena menggabungkan akurasi tinggi dengan kestabilan ensemble. Untuk data tabular seperti ini, Random Forest sering kali sebagus atau lebih baik dari deep learning.
 
 ---
 
-## Fitur Paling Berpengaruh
+## Apa yang Paling Mempengaruhi Prediksi
 
-1. **Odor (Aroma)** — hampir bisa menentukan class sendirian
-2. **Gill-size (Ukuran insang)** — membedakan edible vs poisonous
-3. **Gill-color (Warna insang)** — informasi tambahan signifikan
-4. **Ring-type (Jenis cincin)** — pola yang konsisten
-5. **Spore-print-color (Warna cetakan spora)** — kontribusi kuat
+Berdasarkan analisis Feature Importance dan SHAP:
+
+1. **Aroma (odor)** — fitur paling kuat. Jamur tanpa bau hampir pasti edible; bau foul/fishy/spicy hampir pasti poisonous.
+2. **Ukuran insang (gill-size)** — insang lebar cenderung edible, sempit cenderung poisonous.
+3. **Warna insang (gill-color)** — pola warnanya cukup konsisten untuk membedakan kelas.
+4. **Jenis cincin (ring-type)** — perbedaan bentuk cincin mengikut pola tertentu.
+5. **Warna cetakan spora (spore-print-color)** — kontribusinya signifikan juga.
 
 ---
 
 ## Bonus Challenge
 
-| Bonus | Deskripsi |
-|-------|-----------|
-| PCA Visualization | Pemisahan edible vs poisonous di ruang 2D |
-| SHAP Explainability | Interpretasi prediksi di level individu |
-| Advanced Models | XGBoost, SVM, KNN |
-| Prediction Function | Pipeline end-to-end dari input mentah sampai label |
+| Bonus | Isi |
+|-------|-----|
+| **PCA Visualization** | Pemisahan edible vs poisonous divisualisasikan di ruang 2D |
+| **SHAP Explainability** | Interpretasi prediksi di level individu — kenapa model bilang jamur ini edible/poisonous |
+| **Advanced Models** | XGBoost, SVM, KNN — model tambahan untuk perbandingan |
+| **Prediction Function** | Pipeline end-to-end: input ciri-ciri jamur mentah, langsung keluar label dan probabilitas |
 
 ---
 
-## Cara Menjalankan
+## Cara Pakai
+
+1. Install dependencies-nya dulu:
 
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn tensorflow shap xgboost
 ```
 
-Buka Jupyter Notebook:
+2. Buka folder `notebook/`, lalu jalankan notebook-nya:
+
 ```bash
 cd notebook
 jupyter notebook Rizky_Ahmad_Arief_09020182529006_TakeHomeML.ipynb
 ```
 
-Jalankan semua cell dari atas ke bawah (Cell → Run All).
+3. Jalankan semua cell dari atas ke bawah (Cell → Run All).
 
 ---
 
-## File
+## Struktur Repo
 
 ```
 Mushroom-Classification/
